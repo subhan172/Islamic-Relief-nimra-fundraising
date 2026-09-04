@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Nimra Education — Islamic Relief Pakistan</title>
+<link rel="icon" href="islamic-relief-pakistan.png" type="image/png" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css" />
+<script>
+/* Apply the saved light/dark choice before the page paints. */
+(function () {
+  try {
+    var t = window.localStorage.getItem("irp.theme");
+    if (t !== "dark" && t !== "light") {
+      t = (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) ? "dark" : "light";
+    }
+    document.documentElement.setAttribute("data-theme", t);
+  } catch (e) {}
+})();
+</script>
+</head>
+<body>
+
+<canvas id="confetti" aria-hidden="true"></canvas>
+
+<!-- ============================ MASTHEAD ============================ -->
+<header class="masthead">
+  <div class="wrap">
+    <div class="brandbar">
+      <div class="mark" aria-hidden="true">
+        <img src="islamic-relief-pakistan.png" alt="" width="146" height="220" />
+      </div>
+      <div class="org">
+        <b>Islamic Relief Pakistan</b>
+        <span>Fundraising Progress Dashboard</span>
+      </div>
+      <div class="masthead-actions">
+        <button class="btn btn-quiet" id="themeBtn" type="button" aria-pressed="false" title="Switch to dark mode"><span class="ico" id="themeIcon" aria-hidden="true">🌙</span><span id="themeLabel">Dark mode</span></button>
+        <button class="btn btn-quiet" id="authBtn">Admin sign in</button>
+        <button class="btn btn-quiet admin-only" id="settingsBtn" aria-expanded="false" aria-controls="settings">Manage campaign</button>
+        <button class="btn btn-primary" id="stallBtn">Enter stall mode</button>
+      </div>
+    </div>
+
+    <div class="campaign">
+      <div class="campaign-text">
+        <p class="tagline">Together, we can change a life.</p>
+        <h1 class="campaign-name" id="campaignName">Nimra Education</h1>
+        <p class="campaign-desc" id="campaignDesc"></p>
+      </div>
+      <div class="target-chip">
+        <small>Campaign target</small>
+        <b class="num" id="targetChip">Rs. 92,400</b>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- ============================ HERO ============================ -->
+  <section class="hero" aria-label="Fundraising progress">
+    <div class="card figures">
+      <div class="figure-grid">
+        <div class="figure lead">
+          <span class="label">Total raised</span>
+          <span class="value num" id="totalRaised" aria-live="polite">Rs. 0</span>
+          <span class="of-target num" id="ofTarget">of Rs. 92,400</span>
+        </div>
+        <div class="figure">
+          <span class="label">Target</span>
+          <span class="value num" id="targetValue">Rs. 92,400</span>
+        </div>
+        <div class="figure">
+          <span class="label">Still needed</span>
+          <span class="value num" id="remainingValue">Rs. 92,400</span>
+        </div>
+        <div class="figure">
+          <span class="label">Donations received</span>
+          <span class="value num" id="donationCount">0</span>
+        </div>
+      </div>
+
+      <div class="bar-head">
+        <span class="pct num" id="pctLabel">0%</span>
+        <span class="caption" id="barCaption">complete</span>
+      </div>
+      <div class="bar" role="progressbar" aria-label="Fundraising progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="progressBar">
+        <div class="bar-fill" id="barFill"></div>
+      </div>
+      <div class="bar-ticks" aria-hidden="true">
+        <span>Rs. 0</span><span id="tick25"></span><span id="tick50"></span><span id="tick75"></span><span id="tick100"></span>
+      </div>
+    </div>
+
+    <div class="card jar-panel">
+      <div class="jar-wrap">
+        <svg class="jar-svg" viewBox="0 0 260 360" role="img" aria-labelledby="jarTitle jarDesc">
+          <title id="jarTitle">Donation jar</title>
+          <desc id="jarDesc">A jar filling with green liquid as donations are received.</desc>
+          <defs>
+            <linearGradient id="liquidGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop class="stop-top" offset="0%" stop-color="#00A651"/>
+              <stop class="stop-bottom" offset="100%" stop-color="#008C46"/>
+            </linearGradient>
+            <linearGradient id="glassGrad" x1="0" y1="0" x2="1" y2="1">
+              <stop class="stop-glass-a" offset="0%" stop-color="#FFFFFF" stop-opacity="0.9"/>
+              <stop class="stop-glass-b" offset="100%" stop-color="#E9F2FA" stop-opacity="0.5"/>
+            </linearGradient>
+            <clipPath id="jarClip">
+              <path d="M84,66 C84,84 34,96 34,142 L34,296 C34,322 54,336 78,336 L182,336 C206,336 226,322 226,296 L226,142 C226,96 176,84 176,66 Z"/>
+            </clipPath>
+          </defs>
+
+          <!-- lid -->
+          <rect class="jar-lid" x="76" y="20" width="108" height="26" rx="10" fill="#0A4D8C"/>
+          <rect class="jar-collar" x="86" y="44" width="88" height="12" rx="5" fill="#0A63B0"/>
+
+          <!-- glass body -->
+          <path d="M84,66 C84,84 34,96 34,142 L34,296 C34,322 54,336 78,336 L182,336 C206,336 226,322 226,296 L226,142 C226,96 176,84 176,66 Z"
+                class="jar-glass" fill="url(#glassGrad)" stroke="#C6D9EA" stroke-width="3"/>
+
+          <!-- liquid -->
+          <g clip-path="url(#jarClip)">
+            <g id="liquid" style="transform:translateY(320px)">
+              <g class="waves slow" opacity="0.45">
+                <path d="M-60,6 q30,-13 60,0 t60,0 t60,0 t60,0 t60,0 t60,0 t60,0 L420,420 L-60,420 Z" fill="url(#liquidGrad)"/>
+              </g>
+              <g class="waves">
+                <path d="M-60,0 q30,-11 60,0 t60,0 t60,0 t60,0 t60,0 t60,0 t60,0 L420,420 L-60,420 Z" fill="url(#liquidGrad)"/>
+              </g>
+              <g fill="#ffffff" opacity="0.5">
+                <circle class="bubble" cx="80"  cy="120" r="5" style="animation-delay:.2s"/>
+                <circle class="bubble" cx="126" cy="160" r="3.4" style="animation-delay:1.7s"/>
+                <circle class="bubble" cx="172" cy="132" r="6" style="animation-delay:3.1s"/>
+                <circle class="bubble" cx="104" cy="182" r="3" style="animation-delay:4.4s"/>
+                <circle class="bubble" cx="188" cy="176" r="4" style="animation-delay:2.5s"/>
+              </g>
+            </g>
+          </g>
+
+          <!-- etched star + highlight -->
+          <g clip-path="url(#jarClip)" opacity="0.28">
+            <path d="M130 150 l14 28 28-14 -14 28 28 14 -28 14 14 28 -28-14 -14 28 -14-28 -28 14 14-28 -28-14 28-14 -14-28 28 14Z"
+                  class="jar-etch" fill="none" stroke="#FFFFFF" stroke-width="2.5"/>
+          </g>
+          <path class="jar-etch" d="M60,150 C56,190 56,250 60,300" stroke="#FFFFFF" stroke-width="7" stroke-linecap="round" fill="none" opacity="0.55"/>
+          <path d="M84,66 C84,84 34,96 34,142 L34,296 C34,322 54,336 78,336 L182,336 C206,336 226,322 226,296 L226,142 C226,96 176,84 176,66 Z"
+                class="jar-outline" fill="none" stroke="#0A4D8C" stroke-opacity="0.35" stroke-width="3"/>
+        </svg>
+      </div>
+      <div class="jar-pct num" id="jarPct">0%</div>
+      <p class="jar-note" id="jarNote">The jar fills as the stall collects donations.</p>
+    </div>
+  </section>
+
+  <!-- ============================ STATS ============================ -->
+  <section class="stats" aria-label="Live statistics">
+    <div class="stat"><span class="k"><span aria-hidden="true">💰</span> Total raised</span><span class="v num" id="sTotal">Rs. 0</span></div>
+    <div class="stat"><span class="k"><span aria-hidden="true">🎯</span> Target</span><span class="v num" id="sTarget">Rs. 0</span></div>
+    <div class="stat"><span class="k"><span aria-hidden="true">📊</span> Progress</span><span class="v num" id="sPct">0%</span></div>
+    <div class="stat"><span class="k"><span aria-hidden="true">💚</span> Remaining</span><span class="v num" id="sRemaining">Rs. 0</span></div>
+    <div class="stat"><span class="k"><span aria-hidden="true">👥</span> Donors</span><span class="v num" id="sDonors">0</span></div>
+    <div class="stat"><span class="k"><span aria-hidden="true">🏆</span> Milestones</span><span class="v num" id="sMilestones">0 of 4</span></div>
+  </section>
+
+  <!-- ============================ EXTRA MONEY ============================ -->
+  <section class="card" id="extraCard" aria-labelledby="extraHead" style="margin-top:22px">
+    <div class="card-head">
+      <h2 id="extraHead">Extra money</h2>
+      <p>Everything raised above the campaign target. New donations land here automatically once the goal is passed.</p>
+    </div>
+    <div class="card-body">
+      <div class="figure-grid">
+        <div class="figure">
+          <span class="label">Extra raised</span>
+          <span class="value num" id="extraAmount" aria-live="polite">Rs. 0</span>
+        </div>
+        <div class="figure">
+          <span class="label">Donations counted as extra</span>
+          <span class="value num" id="extraCount">0</span>
+        </div>
+        <div class="figure">
+          <span class="label">Above target</span>
+          <span class="value num" id="extraPct">0%</span>
+        </div>
+      </div>
+      <ul class="donations" id="extraList"></ul>
+      <p class="empty" id="extraEmpty" hidden>No extra money yet.</p>
+    </div>
+  </section>
+
+  <!-- ============================ COLUMNS ============================ -->
+  <div class="columns">
+
+    <section class="card entry admin-only" aria-labelledby="addHead">
+      <div class="card-head">
+        <h2 id="addHead">Add a donation</h2>
+        <p>Enter each contribution as it comes in at the stall.</p>
+      </div>
+      <div class="card-body">
+        <div class="field">
+          <label for="donorName">Donor name</label>
+          <input id="donorName" type="text" autocomplete="off" placeholder="Ali" maxlength="40" />
+          <p class="hint">Leave blank to record the donation as Anonymous.</p>
+        </div>
+        <div class="field">
+          <label for="donorAmount">Amount (Rs.)</label>
+          <input id="donorAmount" type="number" inputmode="numeric" min="1" step="1" placeholder="5000"
+                 aria-describedby="amountError" />
+        </div>
+        <div class="quick" role="group" aria-label="Quick amounts">
+          <button type="button" data-amt="500">Rs. 500</button>
+          <button type="button" data-amt="1000">Rs. 1,000</button>
+          <button type="button" data-amt="2500">Rs. 2,500</button>
+          <button type="button" data-amt="5000">Rs. 5,000</button>
+        </div>
+        <button class="btn btn-primary btn-block" id="addBtn">+ Add donation</button>
+        <p class="error" id="amountError" role="alert"></p>
+      </div>
+    </section>
+
+    <section class="card" aria-labelledby="recentHead">
+      <div class="card-head">
+        <h2 id="recentHead">Donation history</h2>
+        <p>Every donation recorded, newest first.</p>
+      </div>
+      <div class="card-body">
+        <ul class="donations" id="donationList"></ul>
+        <p class="empty" id="donationEmpty" hidden>No donations recorded yet. The first one will appear here.</p>
+      </div>
+    </section>
+
+    <section class="card" aria-labelledby="msHead">
+      <div class="card-head">
+        <h2 id="msHead">Milestones</h2>
+        <p>Each milestone covers another stretch of a child's schooling.</p>
+      </div>
+      <div class="card-body">
+        <ul class="ms" id="milestoneList"></ul>
+      </div>
+    </section>
+  </div>
+
+  <!-- ============================ SETTINGS ============================ -->
+  <section class="card admin-only" id="settings" hidden aria-labelledby="setHead" style="margin-top:22px">
+    <div class="card-head">
+      <h2 id="setHead">Manage campaign</h2>
+      <p>Donations are stored centrally in Supabase. The settings below are saved on this device only.</p>
+    </div>
+    <div class="card-body">
+      <div class="settings-grid">
+        <div class="field">
+          <label for="setName">Campaign name</label>
+          <input id="setName" type="text" maxlength="80" />
+        </div>
+        <div class="field">
+          <label for="setTarget">Fundraising target (Rs.)</label>
+          <input id="setTarget" type="number" min="1" step="1" />
+        </div>
+        <div class="field span">
+          <label for="setDesc">Campaign description</label>
+          <textarea id="setDesc" rows="2" maxlength="220"></textarea>
+        </div>
+        <div class="field">
+          <label for="setCurrent">Current amount raised (Rs.)</label>
+          <input id="setCurrent" type="number" min="0" step="1" />
+          <p class="hint">Use this to match the dashboard to cash already counted. It adjusts the total on this device without deleting the list.</p>
+        </div>
+        <div class="field">
+          <label for="setSplit">Milestone split</label>
+          <select id="setSplit">
+            <option value="keep">Keep the amounts below</option>
+            <option value="quarters">Reset to four equal quarters of the target</option>
+          </select>
+        </div>
+        <div class="field span">
+          <label>Milestones and celebration messages</label>
+          <div id="msEditor"></div>
+        </div>
+      </div>
+      <div class="settings-actions">
+        <button class="btn btn-primary" id="saveSettings">Save changes</button>
+        <button class="btn btn-quiet" id="sampleBtn">Load sample donations</button>
+        <button class="btn btn-danger" id="resetBtn">Reset campaign data</button>
+        <span class="saved-flash" id="savedFlash" role="status">Changes saved.</span>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="foot wrap">
+  <p>Islamic Relief Pakistan — fundraising stall dashboard. Only a donor name and amount are recorded; no CNIC, phone, or payment details are ever collected.</p>
+</footer>
+
+<!-- ============================ OVERLAYS ============================ -->
+<div class="toasts" id="toasts" aria-live="polite" aria-atomic="false"></div>
+
+<div class="backdrop" id="celebrateBackdrop" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="celebrateTitle" id="celebrateModal">
+    <div class="emblem" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M8 21h8M12 17v4M6 4h12v5a6 6 0 0 1-12 0Z"/><path d="M18 5h2.5a2.5 2.5 0 0 1-2.5 4M6 5H3.5A2.5 2.5 0 0 0 6 9"/>
+      </svg>
+    </div>
+    <h2 id="celebrateTitle">Congratulations!</h2>
+    <p class="msg" id="celebrateMsg"></p>
+    <p class="sub" id="celebrateSub">Thank you for helping us make a difference. 💚</p>
+    <div class="actions">
+      <button class="btn btn-primary" id="celebrateClose">Keep going</button>
+    </div>
+  </div>
+</div>
+
+<div class="backdrop" id="authBackdrop" hidden>
+  <div class="modal confirm" role="dialog" aria-modal="true" aria-labelledby="authTitle" id="authModal">
+    <h2 id="authTitle">Admin sign in</h2>
+    <p class="sub">Sign in to add or remove donations. Everyone can still view the dashboard without signing in.</p>
+    <div class="field" style="margin-top:18px">
+      <label for="authEmail">Email</label>
+      <input id="authEmail" type="email" autocomplete="username" autocapitalize="none" spellcheck="false" />
+    </div>
+    <div class="field">
+      <label for="authPassword">Password</label>
+      <input id="authPassword" type="password" autocomplete="current-password" />
+    </div>
+    <p class="error" id="authError" role="alert"></p>
+    <div class="actions">
+      <button class="btn btn-ghost" id="authCancel">Cancel</button>
+      <button class="btn btn-primary" id="authSubmit">Sign in</button>
+    </div>
+  </div>
+</div>
+
+<div class="backdrop" id="confirmBackdrop" hidden>
+  <div class="modal confirm" role="alertdialog" aria-modal="true" aria-labelledby="confirmTitle" aria-describedby="confirmBody">
+    <h2 id="confirmTitle">Reset all fundraising data?</h2>
+    <p id="confirmBody" class="sub">Are you sure you want to reset all fundraising data? Every donation in the Supabase database and the running total will be cleared. Campaign settings and milestones are kept.</p>
+    <div class="actions">
+      <button class="btn btn-ghost" id="confirmCancel">Cancel</button>
+      <button class="btn btn-danger" id="confirmOk">Reset data</button>
+    </div>
+  </div>
+</div>
+
+<!-- Supabase JavaScript client (official UMD build) -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="script.js"></script>
+</body>
+</html>
